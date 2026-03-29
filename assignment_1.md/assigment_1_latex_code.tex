@@ -1,0 +1,188 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{amsmath, amssymb}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{hyperref}
+
+% Header/Footer
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{EMU414 - Assignment 1}
+\rhead{Kerem Berkalp Çerekçi-2200469810}
+\cfoot{\thepage}
+
+\title{
+    \large \textbf{EMU414 Mathematical Programming and Computer Applications}\\
+    \large Department of Industrial Engineering, Hacettepe University\\
+    \large 2025--2026 \\[0.5em]
+    \Large \textbf{Assignment 1}
+}
+\begin{document}
+\maketitle
+\thispagestyle{fancy}
+
+% ============================================================
+\section*{Question 1}
+% ============================================================
+
+\subsection*{Sets and Indices}
+\begin{itemize}
+    \item $P$: Set of all presentations ($|P| = 55$; 40 undergraduate, 10 master's, 5 doctoral)
+    \item $T$: Set of available time slots
+    \item $K$: Set of jury members
+\end{itemize}
+
+\subsection*{Parameters}
+\begin{itemize}
+a_{ik} = \begin{cases} 1 & \text{if jury member } k \text{ is assigned to presentation } i \\ 0 & \text{otherwise} \end{cases}
+\end{itemize}
+
+\subsection*{Decision Variables}
+\[
+x_{it} =
+\begin{cases}
+1 & \text{if presentation } i \text{ is scheduled in time slot } t \\
+0 & \text{otherwise}
+\end{cases}
+\quad \forall i \in P,\ t \in T
+\]
+
+\subsection*{Objective Function }
+
+A conflict occurs when a jury member is assigned to more than one presentation in the same time slot. If a jury member has $n$ presentations in a single slot, the number of pairwise conflicts is $\binom{n}{2} = \frac{n(n-1)}{2}$, which is proportional to $n^2 - n$. Therefore, we minimize:
+
+\[
+\min \sum_{k \in K} \sum_{t \in T}
+\left( \sum_{i \in P} a_{ik} \cdot x_{it} \right)^2
+- \sum_{k \in K} \sum_{t \in T} \sum_{i \in P} a_{ik} \cdot x_{it}
+\]
+
+The squared term makes the objective function non-linear. Minimizing $\left(\sum_i a_{ik} x_{it}\right)^2$ penalizes heavily when a jury member $k$ is assigned to multiple presentations in the same slot $t$, since the penalty grows quadratically.
+
+\subsection*{Constraints}
+
+Each presentation must be assigned to exactly one time slot:
+\[
+\sum_{t \in T} x_{it} = 1 \qquad \forall i \in P
+\]
+
+Variable bounds:
+\[
+x_{it} \in \{0, 1\} \qquad \forall i \in P,\ \forall t \in T
+\]
+
+% ============================================================
+\section*{Question 2}
+% ============================================================
+
+\subsection*{(a)}
+
+The proportion of building area allocated to space type $j$ is a naturally continuous quantity—it can take any value in the real interval $[l_j,\, u_j]$ (e.g., 27.5\% or 33.2\%). Using continuous variables correctly models the real-world flexibility of space allocation decisions and allows the total area constraint to be expressed as a simple linear equality. Forcing integer values would be unnecessarily restrictive and would not reflect the actual nature of the problem.
+
+\subsection*{(b) Objective Function:}
+
+\[
+\max \sum_{j=1}^{n} v_j x_j
+\]
+
+\subsection*{(c) Objective Function:}
+
+\[
+\min \sum_{j=1}^{n} r_j x_j
+\]
+
+\subsection*{(d) Proportions Sum to 100\%}
+
+\[
+\sum_{j=1}^{n} x_j = 1
+\]
+
+\subsection*{(e) Minimum Area Proportion Constraints ($n$ constraints)}
+
+\[
+x_j \geq l_j \qquad \forall j = 1, \ldots, n
+\]
+
+\subsection*{(f) Maximum Area Proportion Constraints ($n$ constraints)}
+
+\[
+x_j \leq u_j \qquad \forall j = 1, \ldots, n
+\]
+
+\subsection*{(g) Model Classification and Multi-Objective Discussion}
+
+This model is classified as an LP (Linear Program). This is because the objective functions are linear with respect to the variables x_j, all constraints are linear, and the decision variables are continuous.
+
+The presence of two different objective functions in the model does not, by itself, make it a multi-objective optimization model. In a true multi-objective optimization model, the objectives are optimized simultaneously, and the trade-offs between them are considered. This is typically done using methods such as the weighted sum method, the ε-constraint approach, or Pareto optimal solutions.
+
+If the objective functions are solved separately, two distinct LP problems are obtained instead of a single model. Therefore, for a model to be considered multi-objective, the objectives must be addressed together within the same model and optimized simultaneously.
+
+
+% ============================================================
+\section*{Question 3}
+% ============================================================
+
+\begin{enumerate}[label=(\alph*)]
+    \item \textbf{Volume of water a factory uses in a month:} \\
+    \textbf{Continuous variable.} Water volume can take any non-negative real value (e.g., 1,350.75 liters). There is no natural reason to restrict it to whole numbers.
+
+    \item \textbf{Yes/no decision to stop a machine for maintenance:} \\
+    \textbf{Binary (integer) variable.} The decision is inherently discrete: either the machine is stopped (1) or it is not (0).
+
+    \item \textbf{Type of machine chosen for a production line:} \\
+    \textbf{Binary (integer) variable.} Selecting among a finite set of machine types requires binary variables (one per machine type), often modeled as $\sum_m y_m = 1$ where $y_m \in \{0,1\}$.
+
+    \item \textbf{Number of dry days expected during next year's drought:} \\
+    \textbf{Integer variable.} Days are counted in whole numbers; a fractional number of days is not meaningful in this context.
+\end{enumerate}
+
+% ============================================================
+\section*{Question 4}
+% ============================================================
+
+\begin{enumerate}[label=(\alph*)]
+
+\item
+\[
+\min\ z_4 \quad \text{s.t.} \quad 18z_1 + 22z_2 + 14z_3 \leq z_4, \quad z_1, z_2, z_3 \geq 0
+\]
+\textbf{LP.} All expressions are linear in $z_j$; all variables are continuous.
+
+\item
+\[
+\max\ 6z_1 + 13z_2 \quad \text{s.t.} \quad z_1 z_2 z_3 = 1, \quad z_1, z_2 \geq 0,\ z_3 \in \{0,1\}
+\]
+\textbf{INLP.} The constraint $z_1 z_2 z_3 = 1$ is non-linear (product of variables); $z_3$ is a binary integer variable.
+
+\item
+\[
+\min\ 8z_1z_2 + 20z_2z_3 + 25z_1z_3 \quad \text{s.t.} \quad \sum_{j=1}^{3} z_j = 2,\ z_j \in \{0,1\}
+\]
+\textbf{INLP.} The objective contains products of binary variables ($z_iz_j$), which are non-linear. All variables are binary integers.
+
+\item
+\[
+\max\ 4z_1 + \frac{9}{z_2} + z_2 z_3 \quad \text{s.t.} \quad 10z_1 - 7z_2 \geq z_3,\ 0 \leq z_j \leq 1
+\]
+\textbf{NLP.} The objective contains $9/z_2$ and $z_2z_3$, both non-linear terms. All variables are continuous.
+
+\item
+\[
+\max\ 5z_1 + 11z_2 + 14z_3 \quad \text{s.t.} \quad 8z_1 + 6z_2 + 10z_3 \leq 20,\ z_j \in \{0,1\}
+\]
+\textbf{ILP.} The objective and constraint are linear; however, all variables are binary integers.
+
+\item
+\[
+\max\ 7z_1z_2 + 12z_3 \quad \text{s.t.} \quad 20z_1 + z_2 \leq 15,\ z_1, z_2 \geq 0,\ z_3 \in \{0,1\}
+\]
+\textbf{INLP.} The term $7z_1z_2$ in the objective is non-linear (product of continuous variables); $z_3$ is a binary integer variable.
+
+\end{enumerate}
+
+\end{document}
+
